@@ -1,6 +1,6 @@
 # Scala with Cats - Code and Exercises
 
-This repositiry contains the code of the chapters and of the the exercises
+This repository contains the code of the chapters and of the exercises
 of the book "Scala with Cats" by Noel Welsh and Dave Gurnell.
 
 https://underscore.io/books/scala-with-cats/
