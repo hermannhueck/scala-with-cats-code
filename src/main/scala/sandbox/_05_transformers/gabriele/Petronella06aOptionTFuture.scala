@@ -7,7 +7,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
-object Petronella07 extends App {
+object Petronella06aOptionTFuture extends App {
 
   println("--- using OptionT with Future")
 

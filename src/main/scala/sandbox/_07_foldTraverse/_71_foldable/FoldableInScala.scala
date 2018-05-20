@@ -10,7 +10,7 @@ object FoldableInScala extends App {
   println(show(Nil))
   println(show(List(1, 2, 3)))
 
-  println(List(1, 2, 3).foldLeft(0)(_ + _))
+  println(List(1, 2, 3).foldLeft(0)(_ + _)) // same as:  sum
   println(List(1, 2, 3).foldRight(0)(_ + _))
 
   println(List(1, 2, 3).foldLeft(0)(_ - _))
@@ -27,7 +27,9 @@ object FoldableInScala extends App {
 
   println("-- filter")
 
-  def filter[A](l: List[A])(p: A => Boolean) = l.foldRight(List.empty[A])((elem, acc) => if (p(elem)) elem :: acc else acc)
+  def filter[A](l: List[A])(p: A => Boolean): List[A] =
+    l.foldRight(List.empty[A])((elem, acc) => if (p(elem)) elem :: acc else acc)
+
   def even(x: Int) = x % 2 == 0
   println(l.filter(even))
   println(filter(l)(even))
@@ -35,7 +37,9 @@ object FoldableInScala extends App {
 
   println("-- map")
 
-  def map[A, B](l: List[A])(f: A => B) = l.foldRight(List.empty[B])((elem, acc) => f(elem) :: acc)
+  def map[A, B](l: List[A])(f: A => B): List[B] =
+    l.foldRight(List.empty[B])((elem, acc) => f(elem) :: acc)
+
   def square(x: Int) = x * x
   println(l.map(square))
   println(map(l)(square))
@@ -45,6 +49,7 @@ object FoldableInScala extends App {
 
   def flatMap[A, B](l: List[A])(f: A => List[B]): List[B] =
     l.foldRight(List.empty[B])((elem, acc) => f(elem) ::: acc)
+
   def squareList(x: Int) = List(x * x)
   println(l.flatMap(squareList))
   println(flatMap(l)(squareList))
@@ -53,7 +58,7 @@ object FoldableInScala extends App {
 
   println("-- sumOfInts")
 
-  def sumOfInts(ints: List[Int]) = ints.fold(0)(_ + _)
+  def sumOfInts(ints: List[Int]): Int = ints.fold(0)(_ + _)
   println(l.sum)
   println(sumOfInts(l))
   assert(l.sum == sumOfInts(l))

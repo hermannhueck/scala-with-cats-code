@@ -6,7 +6,7 @@ import scala.concurrent.{Await, Future}
 
 object Petronella02 extends App {
 
-  println("--- using Future[A], should be Future[Option[A]]")
+  println("--- using Future[A], but should be Future[Option[A]]")
 
   final case class Address(zip: Int, city: String, street: String)
   final case class User(name: String, address: Address)

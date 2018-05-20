@@ -35,7 +35,7 @@ object _54_TramsformAndRollout extends App {
 
   def tacticalReport(ally1: String, ally2: String): String = {
 
-    val stack = canSpecialMove(ally1, ally2).value
+    val stack: Future[Either[String, Boolean]] = canSpecialMove(ally1, ally2).value
 
     Await.result(stack, 1.second) match {
       case Left(msg) =>

@@ -5,7 +5,7 @@ import cats.instances.list._
 import cats.instances.option._
 import cats.syntax.applicative._
 
-object Petronella06 extends App {
+object Petronella05bListOpt extends App {
 
   println("--- using ListOpt")
 
@@ -34,14 +34,10 @@ object Petronella06 extends App {
     }
 
     implicit class ListOptSyntax[A](loA: ListOpt[A]) {
-
       def pure(a: A)(implicit monad: Monad[ListOpt]): ListOpt[A] = monad.pure(a)
-
       def map[B](f: A => B)(implicit monad: Monad[ListOpt]): ListOpt[B] = monad.map(loA)(f)
-
       def flatMap[B](f: A => ListOpt[B])(implicit monad: Monad[ListOpt]): ListOpt[B] = monad.flatMap(loA)(f)
     }
-
   }
 
   def getUser(name: String): ListOpt[User] = ListOpt(List(Option(gabriele)))

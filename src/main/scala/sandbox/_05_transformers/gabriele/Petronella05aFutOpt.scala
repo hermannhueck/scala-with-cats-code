@@ -9,7 +9,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
 import scala.concurrent.{Await, Future}
 
-object Petronella05 extends App {
+object Petronella05aFutOpt extends App {
 
   // Functors compose!
   // def compose[F[_]: Functor, G[_]: Functor]: Functor[F[G[_]]] = ???
@@ -28,6 +28,7 @@ object Petronella05 extends App {
   object FutOpt {
 
     implicit val futOptMonad: Monad[FutOpt] = new Monad[FutOpt] {
+
       override def pure[A](a: A): FutOpt[A] = FutOpt(a.pure[Option].pure[Future])
 
       //    override def map[A, B](fa: FutOpt[A])(f: A => B): FutOpt[B] = flatMap(fa)(a => pure(f(a)))

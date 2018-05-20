@@ -17,7 +17,7 @@ object TreeMonad extends App {
   def branch[A](left: Tree[A], right: Tree[A]): Tree[A] = Branch(left, right)
 
 
-  implicit val treeMonad = new Monad[Tree] {
+  implicit val treeMonad: Monad[Tree] = new Monad[Tree] {
 
     def pure[A](value: A): Tree[A] = Leaf(value)
 
@@ -33,13 +33,13 @@ object TreeMonad extends App {
       f(a) match {
         case Leaf(Left(a1)) => tailRecM(a1)(f)
         case Leaf(Right(b)) => Leaf(b)
-        case Branch(l, r) =>
+        case Branch(left, right) =>
           Branch(
-            flatMap(l) {
+            flatMap(left) {
               case Left(l)  => tailRecM(l)(f)
               case Right(l) => pure(l)
             },
-            flatMap(r) {
+            flatMap(right) {
               case Left(r)  => tailRecM(r)(f)
               case Right(r) => pure(r)
             }

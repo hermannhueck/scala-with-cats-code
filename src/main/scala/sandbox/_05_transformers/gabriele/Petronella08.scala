@@ -1,26 +1,39 @@
 package sandbox._05_transformers.gabriele
 
-import cats.data.OptionT
-import cats.instances.list._
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.duration._
+import scala.concurrent.{Await, Future}
+
+import cats.syntax.option._
 
 object Petronella08 extends App {
 
-  println("--- using OptionT with List")
+  println("--- awful user update with Future[Option[A]]")
 
-  final case class Address(zip: Int, city: String, street: String)
-  final case class User(name: String, address: Address)
-  val gabriele = User("Gabriele", Address(12345, "Milano", "Scala"))
+  final case class User(id: String, name: String, age: Int, nickname: String)
+  val gabriele = User("123", "Gabriele", 35, "gabro27")
 
-  def getUser(name: String): OptionT[List, User] = OptionT(List(Option(gabriele)))
+  def checkUserExists(id: String): Future[Option[User]] = Future(Option(gabriele))
 
-  def getAddress(user: User): OptionT[List, Address] = OptionT(List(Option(user.address)))
+  def checkCanBeUpdated(user: User): Future[Boolean] = Future(true)
 
-  def getCity(name: String): OptionT[List, String] = for {
-    user <- getUser(name)
-    address <- getAddress(user)
-  } yield address.city
+  def updateUserOnDb(user: User): Future[User] = Future(user)
 
-  println(getCity("Gabriele").value.head.getOrElse("User or city not found"))
+  def updateUser(id: String): Future[Option[User]] =
+    checkUserExists(id).flatMap {
+      case None => Future(none)
+      case Some(user) => checkCanBeUpdated(user).flatMap { canBeUpdated =>
+        if (!canBeUpdated)
+          Future(none)
+        else
+          updateUserOnDb(user).map(_.some)
+      }
+    }
+
+  println(Await.result(
+    updateUser("123"),
+    3.seconds
+  ).getOrElse("User or city not found"))
 
   println("-----")
 }

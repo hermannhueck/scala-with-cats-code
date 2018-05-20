@@ -13,7 +13,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import scala.language.higherKinds
 
-object Petronella06a extends App {
+object Petronella05cMOpt extends App {
 
   println("--- using    case class MOpt[M[_]: Monad, A](value: M[Option[A]])")
 
@@ -56,9 +56,7 @@ object Petronella06a extends App {
       type MOpt2[T] = MOpt[M, T]
 
       def pure(a: A)(implicit monad: Monad[MOpt2]): MOpt2[A] = monad.pure(a)
-
       def map[B](f: A => B)(implicit monad: Monad[MOpt2]): MOpt2[B] = monad.map(moA)(f)
-
       def flatMap[B](f: A => MOpt2[B])(implicit monad: Monad[MOpt2]): MOpt2[B] = monad.flatMap(moA)(f)
     }
   }

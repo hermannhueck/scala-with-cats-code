@@ -7,7 +7,7 @@ object OptionMonad extends App {
   import cats.Monad
   import scala.annotation.tailrec
 
-  implicit val optionMonad = new Monad[Option] {
+  implicit val optionMonad: Monad[Option] = new Monad[Option] {
 
     def pure[A](value: A): Option[A] = Some(value)
 

@@ -20,12 +20,12 @@ object TraverseInScala extends App {
 
     val allUptimes1: Future[List[Int]] =
       hostnames.foldLeft(Future(List.empty[Int])) {
-        (accum, host) =>
-          val uptime = getUptime(host)
+        (flAccum, host) =>
+          val fUptime: Future[Int] = getUptime(host)
           for {
-            accum  <- accum
-            uptime <- uptime
-          } yield accum :+ uptime
+            lAccum : List[Int]  <- flAccum
+            uptime : Int <- fUptime
+          } yield lAccum :+ uptime
       }
 
     println(Await.result(allUptimes1, 1.second))
@@ -53,12 +53,12 @@ object TraverseInScala extends App {
 
     val flEmpty: Future[List[Int]] = List.empty[Int].pure[Future] // ~ Future(List.empty[Int])
 
-    def oldCombine(accum : Future[List[Int]], host  : String): Future[List[Int]] = {
-      val uptime = getUptime(host)
+    def oldCombine(flAccum : Future[List[Int]], host  : String): Future[List[Int]] = {
+      val fUptime: Future[Int] = getUptime(host)
       for {
-        accum  <- accum
-        uptime <- uptime
-      } yield accum :+ uptime
+        lAccum : List[Int]  <- flAccum
+        uptime : Int <- fUptime
+      } yield lAccum :+ uptime
     }
 
     val totalUptime1: Future[List[Int]] = hostnames.foldLeft(flEmpty)(oldCombine)
@@ -106,30 +106,43 @@ object TraverseInScala extends App {
     import cats.instances.option._ // for Applicative
 
     def processOptions(inputs: List[Int]): Option[List[Int]] =
-      listTraverse(inputs)(n => if(n % 2 == 0) Some(n) else None)
+      listTraverse(inputs) {
+        n => if(n % 2 == 0) Some(n) else None
+      }
 
     println(processOptions(List(2, 4, 6))) // --> Some(List(2, 4, 6))
     println(processOptions(List(1, 2, 3))) // --> None
 
 
-    println("----- 7.2.2.3 Exercise: Traversing with Validated")
+    println("----- 7.2.2.3a Exercise: Traversing with Validated")
 
     import cats.data.Validated
     import cats.instances.list._ // for Monoid
 
     type ErrorsOr[A] = Validated[List[String], A]
 
-    def processValidated(inputs: List[Int]): ErrorsOr[List[Int]] =
+    def processValidated(inputs: List[Int]): ErrorsOr[List[Int]] = // collects and returns all errors
       listTraverse(inputs) { n =>
-        if (n % 2 == 0) {
-          Validated.valid(n)
-        } else {
-          Validated.invalid(List(s"$n is not even"))
-        }
+        if (n % 2 == 0) Validated.valid(n) else Validated.invalid(List(s"$n is not even"))
       }
 
     println(processValidated(List(2, 4, 6))) // --> Valid(List(2, 4, 6))
     println(processValidated(List(1, 2, 3))) // --> Invalid(List(1 is not even, 3 is not even))
+
+    println("----- 7.2.2.3b Exercise: Traversing with Either")
+
+    import cats.instances.either._
+    import cats.syntax.either._
+
+    type ErrorOr[A] = Either[List[String], A]
+
+    def processEither(inputs: List[Int]): ErrorOr[List[Int]] = // returns only the 1st error
+      listTraverse(inputs) { n =>
+        if (n % 2 == 0) n.asRight[List[String]] else List(s"$n is not even").asLeft[Int]
+      }
+
+    println(processEither(List(2, 4, 6))) // --> Right(List(2, 4, 6))
+    println(processEither(List(1, 2, 3))) // --> Left(List(1 is not even))
   }
 
   println("-----")
