@@ -19,7 +19,7 @@ hs_err_pid*
 /logs/
 /target/
 /project/target/
-/project/project/
+/project/project/target
 .cache
 .cache-*
 .history
