@@ -31,7 +31,7 @@ object Exercise extends App {
           sys.error("Fail!")
       }
 
-    println(evalOne("42").runA(Nil).value)
+    println(evalOne("42").runA(Nil).value) // --> 42
 
     val program = for {
       _   <- evalOne("1")
