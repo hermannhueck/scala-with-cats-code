@@ -1,6 +1,6 @@
 package sandbox._04_monads._48_reader
 
-object Exercise2 extends App {
+object ExerciseWithFunction1 extends App {
 
   import cats.instances.function._
   import cats.syntax.functor._

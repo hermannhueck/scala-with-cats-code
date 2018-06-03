@@ -6,6 +6,7 @@ object _62_ApplySyntax extends App {
     println("----- 6.2 Apply Syntax")
 
     import cats.instances.option._
+    import cats.instances.list._
     import cats.syntax.apply._
 
     val a = (Option(123), Option("abc")).tupled
@@ -13,6 +14,9 @@ object _62_ApplySyntax extends App {
 
     val b = (Option(123), Option("abc"), Option(true)).tupled
     println(b)
+
+    val c = (List(1, 2, 3), List("a", "b", "c")).tupled
+    println(c)
 
     case class Cat(name: String, born: Int, color: String)
 
@@ -41,6 +45,9 @@ object _62_ApplySyntax extends App {
     //  required: (String, Boolean) => ?
     //        (Option("cats"), Option(true)).mapN(add)
     //                                            ^
+
+    val e = (List(10, 20), List(1, 2, 3)).mapN(add)
+    println(e)
   }
 
   {
