@@ -8,8 +8,8 @@ object _53_MonadTransformersInCats extends App {
     println("----- ErrorOrOption")
 
     import cats.data.OptionT
-    import cats.syntax.applicative._
     import cats.instances.either._
+    import cats.syntax.applicative._
 
     type ErrorOr[A] = Either[String, A]
     type ErrorOrOption[A] = OptionT[ErrorOr, A]
@@ -32,13 +32,12 @@ object _53_MonadTransformersInCats extends App {
   {
     println("----- FutureEitherOption")
 
-    import scala.concurrent.Future
     import cats.data.{EitherT, OptionT}
+    import cats.instances.future._
     import cats.syntax.applicative._
 
-    import cats.instances.future._
-    import scala.concurrent.Await
     import scala.concurrent.ExecutionContext.Implicits.global
+    import scala.concurrent.{Await, Future}
     import scala.concurrent.duration._
 
     type FutureEither[A] = EitherT[Future, String, A]
@@ -61,10 +60,14 @@ object _53_MonadTransformersInCats extends App {
 
     println(futureEitherOr.value.value) // Future(Success(Right(Some(42))))
 
-    println(Await.result(
+    val future: Future[Either[String, Option[Int]]] = futureEitherOr.value.value
+
+    val result: Either[String, Option[Int]] = Await.result(
       futureEitherOr.value.value,
       3.seconds
-    )) // Right(Some(42))
+    ) // Right(Some(42))
+
+    println(result.right.get)
   }
 
   {
@@ -76,6 +79,52 @@ object _53_MonadTransformersInCats extends App {
     val x = 123.pure[EitherT[Option, String, ?]]
     println(x)
     println(x.value)
+  }
+
+  {
+    println("----- FutureEitherOption without type aliases using Kind Projector")
+
+    import cats.data.{EitherT, OptionT}
+    import cats.instances.future._
+
+    import scala.concurrent.ExecutionContext.Implicits.global
+    import scala.concurrent.{Await, Future}
+    import scala.concurrent.duration._
+
+    def wrap[A](value: A): OptionT[EitherT[Future, String, ?], A] = {
+      val option: Option[A] = Some(value)
+      val either: Either[String, Option[A]] = Right(option)
+      val future: Future[Either[String, Option[A]]] = Future(either)
+      val etf: EitherT[Future, String, Option[A]] = EitherT[Future, String, Option[A]](future)
+      val otetf: OptionT[EitherT[Future, String, ?], A] = OptionT[EitherT[Future, String, ?], A](etf)
+      otetf
+    }
+
+    val futureEitherOr: OptionT[EitherT[Future, String, ?], Int] =
+      for {
+        a <- wrap(10)
+        b <- wrap(32)
+      } yield a + b
+
+    Await.ready(
+      futureEitherOr.value.value,
+      3.seconds
+    )
+
+    println(futureEitherOr) // OptionT(EitherT(Future(Success(Right(Some(42))))))
+
+    println(futureEitherOr.value) // EitherT(Future(Success(Right(Some(42)))))
+
+    println(futureEitherOr.value.value) // Future(Success(Right(Some(42))))
+
+    val future: Future[Either[String, Option[Int]]] = futureEitherOr.value.value
+
+    val result: Either[String, Option[Int]] = Await.result(
+      futureEitherOr.value.value,
+      3.seconds
+    ) // Right(Some(42))
+
+    println(result.right.get)
   }
 
   {

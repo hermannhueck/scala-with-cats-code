@@ -8,7 +8,7 @@ scalacOptions ++= Seq(
   "-deprecation",         // warn about use of deprecated APIs
   "-unchecked",           // warn about unchecked type parameters
   "-feature",             // warn about misused language features
-  "-Xlint",               // enable handy linter warnings
+  //"-Xlint",               // enable handy linter warnings
   "-Ypartial-unification" // allow the compiler to unify type constructors of different arities
   //"-language:higherKinds",// allow higher kinded types without `import scala.language.higherKinds`
   // "-Xfatal-warnings",     // turn compiler warnings into errors
@@ -16,4 +16,4 @@ scalacOptions ++= Seq(
 
 libraryDependencies += "org.typelevel" %% "cats-core" % "1.1.0"
 
-addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.3")
+addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7")

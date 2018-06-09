@@ -40,6 +40,9 @@ object Exercise extends App {
   println(checkLogin(1, "zerocool").run(db))
   println(checkLogin(4, "davinci").run(db))
 
+  println(checkLogin(1, "zerocool").apply(db))
+  println(checkLogin(4, "davinci").apply(db))
+
   println(checkLogin(1, "zerocool")(db))
   println(checkLogin(4, "davinci")(db))
 
