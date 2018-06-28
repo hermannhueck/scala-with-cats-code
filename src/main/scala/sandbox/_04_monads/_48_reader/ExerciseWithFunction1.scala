@@ -7,7 +7,7 @@ object ExerciseWithFunction1 extends App {
   import cats.syntax.flatMap._
   import cats.syntax.applicative._ // for pure
 
-  println("--- 4.8.3 Exercise: Hacking on Readers")
+  println("--- 4.8.3 Exercise: Hacking on Function1")
 
   val users = Map(
     1 -> "dade",
@@ -36,7 +36,8 @@ object ExerciseWithFunction1 extends App {
       optUsername <- findUsername(userId)
       passwordOk <- optUsername
                       .map(un => checkPassword(un, password))
-                      .getOrElse(false.pure[DbReader])
+                      // .getOrElse(false.pure[DbReader])
+                      .getOrElse((_:Db) => false)
     } yield passwordOk
 
   println(checkLogin(1, "zerocool").apply(db))

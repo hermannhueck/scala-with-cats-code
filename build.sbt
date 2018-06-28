@@ -14,6 +14,9 @@ scalacOptions ++= Seq(
   // "-Xfatal-warnings",     // turn compiler warnings into errors
 )
 
-libraryDependencies += "org.typelevel" %% "cats-core" % "1.1.0"
+libraryDependencies ++= Seq(
+  "org.typelevel" %% "cats-core" % "1.1.0",
+  "org.typelevel" %% "cats-free" % "1.1.0"
+)
 
 addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7")
