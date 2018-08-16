@@ -7,7 +7,6 @@ import cats.syntax.semigroup._
 import cats.syntax.apply._
 import cats.syntax.validated._ // for valid and invalid
 import cats.instances.either._   // for Semigroupal
-import cats.instances.list._     // for Monad
 
 object Kleislis extends App {
 
@@ -29,7 +28,7 @@ object Kleislis extends App {
           func(a)
 
         case And(left, right) =>
-          (left(a), right(a)).mapN((_, _) => a)
+          (left(a), right(a)) mapN ((_, _) => a)
 
         case Or(left, right) =>
           left(a) match {

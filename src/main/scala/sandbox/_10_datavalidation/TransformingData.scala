@@ -83,13 +83,13 @@ object TransformingData extends App {
   }
 
   final case class FlatMap[E, A, B, C](check: Check[E, A, B], f: B => Check[E, A, C]) extends Check[E, A, C] {
-    def apply(a: A)(implicit s: Semigroup[E]): Validated[E, C] =
-      check(a).withEither(_.flatMap(b => f(b)(a).toEither))
+    def apply(in: A)(implicit s: Semigroup[E]): Validated[E, C] =
+      check(in).withEither(eeb => eeb.flatMap(b => f(b)(in).toEither))
   }
 
   final case class AndThen[E, A, B, C](check1: Check[E, A, B], check2: Check[E, B, C]) extends Check[E, A, C] {
-    def apply(a: A)(implicit s: Semigroup[E]): Validated[E, C] =
-      check1(a).withEither(_.flatMap(b => check2(b).toEither))
+    def apply(in: A)(implicit s: Semigroup[E]): Validated[E, C] =
+      check1(in).withEither(eeb => eeb.flatMap(b => check2(b).toEither))
   }
 
   object Check {

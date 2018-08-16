@@ -14,7 +14,7 @@ object BasicCombinators extends App {
 
       def apply(value: A): Either[E, A]
 
-      def and(that: Check[E, A])(implicit me: Semigroup[E]): Check[E, A] = a => (this (a), that(a)) match {
+      def and(that: Check[E, A])(implicit sge: Semigroup[E]): Check[E, A] = a => (this(a), that(a)) match {
         case (Left(e1), Left(e2)) => (e1 |+| e2).asLeft
         case (_, Left(e)) => e.asLeft
         case (Left(e), _) => e.asLeft
@@ -31,15 +31,13 @@ object BasicCombinators extends App {
 
       def apply(value: A): Either[E, A] = f(value)
 
-      def and(that: CheckF[E, A])(implicit me: Semigroup[E]): CheckF[E, A] =
-        CheckF { a =>
-          (this (a), that(a)) match {
-            case (Left(e1), Left(e2)) => (e1 |+| e2).asLeft
-            case (_, Left(e)) => e.asLeft
-            case (Left(e), _) => e.asLeft
-            case (Right(_), Right(_)) => a.asRight
-          }
-        }
+      def and(that: CheckF[E, A])(implicit sge: Semigroup[E]): CheckF[E, A] =
+        CheckF { a => (this (a), that(a)) match {
+          case (Left(e1), Left(e2)) => (e1 |+| e2).asLeft
+          case (_, Left(e)) => e.asLeft
+          case (Left(e), _) => e.asLeft
+          case (Right(_), Right(_)) => a.asRight
+        }}
     }
 
     val a: CheckF[List[String], Int] =
@@ -70,6 +68,7 @@ object BasicCombinators extends App {
 
       def and(that: Check[E, A]): Check[E, A] = And(this, that)
 
+      // apply is the interpreter.
       def apply(a: A)(implicit s: Semigroup[E]): Either[E, A] = this match {
 
           case Pure(f) => f(a)
@@ -105,6 +104,12 @@ object BasicCombinators extends App {
     println(s"check(2) == ${check(2)}")
     println(s"check(-2) == ${check(-2)}")
     println(s"check(-3) == ${check(-3)}")
+
+    // From here we have a number of options:
+    //
+    // inspect and refactor checks after they are created;
+    // move the apply “interpreter” out into its own module;
+    // implement alternative interpreters providing other functionality (for example visualizing checks).
   }
 
 
