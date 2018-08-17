@@ -22,11 +22,11 @@ object MapReduce extends App {
   def foldMap[A, B: Monoid](va: Vector[A])(f: A => B): B =
     va.map(f).combineAll // combineAll == foldLeft(empty)(combine)
 
-  def foldMap2[A, B : Monoid](as: Vector[A])(func: A => B): B =
-    as.map(func).foldLeft(Monoid[B].empty)(_ |+| _)
+  def foldMap2[A, B : Monoid](as: Vector[A])(f: A => B): B =
+    as.map(f).foldLeft(Monoid[B].empty)(_ |+| _)
 
-  def foldMap3[A, B : Monoid](as: Vector[A])(func: A => B): B =
-    as.foldLeft(Monoid[B].empty)(_ |+| func(_))
+  def foldMap3[A, B : Monoid](as: Vector[A])(f: A => B): B =
+    as.foldLeft(Monoid[B].empty)(_ |+| f(_))
 
   println(  foldMap(Vector(1, 2, 3))(identity)  )
   println(  foldMap(Vector(1, 2, 3))(_.toString + "! ")  )

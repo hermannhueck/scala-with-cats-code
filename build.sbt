@@ -23,7 +23,7 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "discipline" % "0.10.0" % Test,
   "org.scalacheck" %% "scalacheck" % "1.14.0" % Test,
   "org.typelevel" %% "cats-mtl-core" % "0.3.0",
-  "com.github.mpilquist" %% "simulacrum" % "0.12.0"
+  "com.github.mpilquist" %% "simulacrum" % "0.13.0"
 )
 
 addCompilerPlugin("org.spire-math" %% "kind-projector" % "0.9.7")
