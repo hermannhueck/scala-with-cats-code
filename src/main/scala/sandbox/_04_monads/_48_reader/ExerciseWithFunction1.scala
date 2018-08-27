@@ -23,7 +23,7 @@ object ExerciseWithFunction1 extends App {
   case class Db(usernames: Map[Int, String], passwords: Map[String, String])
   val db = Db(users, passwords)
 
-  type DbReader[A] = Function1[Db, A]
+  type DbReader[A] = Db => A    // ^= Function1[Db, A]
 
   def findUsername(userId: Int): DbReader[Option[String]] =
     db => db.usernames.get(userId)
@@ -31,7 +31,7 @@ object ExerciseWithFunction1 extends App {
   def checkPassword(username: String, password: String): DbReader[Boolean] =
     db => db.passwords.get(username).contains(password)
 
-  def checkLogin(userId: Int, password: String): DbReader[Boolean] = // ^= Reader[Db, Boolean] ^= Kleisli[Id, Db, Boolean]
+  def checkLogin(userId: Int, password: String): DbReader[Boolean] = // ^= Function1[Db, Boolean] ^= DB => Boolean
     for {
       optUsername <- findUsername(userId)
       passwordOk <- optUsername
