@@ -12,11 +12,11 @@ object ContravariantInCats extends App {
   val showString = Show[String]
 
   val showSymbol = Contravariant[Show].
-    contramap(showString)((sym: Symbol) => s"'${sym.name}")
+    contramap(showString)((sym: Symbol) => s"Symbol(${sym.name})")
 
-  println(showSymbol.show('dave))
+  println(showSymbol.show(Symbol("dave")))
 
-  println(showString.contramap[Symbol](_.name).show('dave))
+  println(showString.contramap[Symbol](_.name).show(Symbol("dave")))
 
   println("---")
 }

@@ -11,9 +11,9 @@ object Main extends App {
   val jsDave = Json.toJson(Person("Dave", "dave@example.com"))
   val jsSomeStr = Json.toJson(Some("some String"))(someWriter)
   val jsSomeStr2 = Json.toJson(Some("some String"))
-  val jsNoString = Json.toJson(None)
+  val jsNoString = Json.toJson(Option.empty[String]) // None changed for migration to 2.13
   val jsSomeDave = Json.toJson(Some(Person("Dave", "dave@example.com")))
-  val jsNoPerson = Json.toJson(None)
+  val jsNoPerson = Json.toJson(Option.empty[Person]) // None changed for migration to 2.13
 
   Json.toJson(Option("A string"))
 

@@ -13,6 +13,8 @@ import scala.language.{higherKinds, implicitConversions}
 
 object GCounter5AppSimulacrum extends App {
 
+  // Doesn't work with Scala 2.13.0, Cats 2.0 and Simulacrum 0.19.0
+/*
   @typeclass(excludeParents = List("Monoid"))
   trait BoundedSemiLattice[A] extends Monoid[A] {
     def empty: A
@@ -80,7 +82,7 @@ object GCounter5AppSimulacrum extends App {
         import KeyValueStore.ops._
 
         override def increment(kvs: F[K, V])(k: K, v: V)(implicit m: Monoid[V]): F[K, V] =
-          kvs.put(k, v |+| kvs.getOrElse(k, m.empty))
+            kvs.put(k, v |+| kvs.getOrElse(k, m.empty))
 
         override def merge(kvs1: F[K, V], kvs2: F[K, V])(implicit bsl: BoundedSemiLattice[V]): F[K, V] =
           kvs1 |+| kvs2 // kv stores not combined correctly
@@ -107,6 +109,7 @@ object GCounter5AppSimulacrum extends App {
   // total: Int = 12
   println(total)
   println("--> Should be: " + 12)
+*/
 
   println("-----\n")
 }

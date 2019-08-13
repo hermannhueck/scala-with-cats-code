@@ -16,7 +16,7 @@ object InvariantInCats extends App {
   println(Monoid[Symbol].empty)
   // res5: Symbol = '
 
-  println('a |+| 'few |+| 'words)
+  println(Symbol("a") |+| Symbol("few") |+| Symbol("words"))
   // res6: Symbol = 'afewwords
 
   println("---")

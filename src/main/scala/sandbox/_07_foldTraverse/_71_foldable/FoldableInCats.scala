@@ -20,7 +20,9 @@ object FoldableInCats extends App {
 
     println(Foldable[Option].foldLeft(maybeInt, 10)(_ * _))
   }
-
+  
+/*    
+// not supported in Cats 2.0
   {
     println("----- 7.1.4.1 Folding Right")
 
@@ -35,7 +37,7 @@ object FoldableInCats extends App {
     import cats.instances.stream._ // for Foldable
 
     val eval: Eval[Long] =
-      Foldable[Stream].
+      Foldable[LazyList].
         foldRight(bigData, Eval.now(0L)) { (num, eval) =>
           eval.map(_ + num)
         }
@@ -47,6 +49,7 @@ object FoldableInCats extends App {
     println((1 to 100000).toList.foldRight(0L)(_ + _)) // stack safe
     println((1 to 100000).toVector.foldRight(0L)(_ + _)) // stack safe
   }
+*/
 
   {
     println("----- 7.1.4.2 Folding with Monoids")

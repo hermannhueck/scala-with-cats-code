@@ -14,23 +14,23 @@ object Examples extends App {
   println(List(1, 2, 3).
     map(n => n + 1).
     map(n => n * 2).
-    map(n => n + "!"))
+    map(n => s"$n!"))
 
   println(Option(123).
     map(n => n + 1).
     map(n => n * 2).
-    map(n => n + "!"))
+    map(n => s"$n!"))
 
   println(Right(123).
     map(n => n + 1).
     map(n => n * 2).
-    map(n => n + "!"))
+    map(n => s"$n!"))
 
   val future: Future[String] =
     Future(123).
       map(n => n + 1).
       map(n => n * 2).
-      map(n => n + "!")
+      map(n => s"$n!")
 
   println(Await.result(future, 1.second))
 
@@ -94,7 +94,7 @@ object Examples extends App {
     ((x: Int) => x.toDouble).
       map(x => x + 1).
       map(x => x * 2).
-      map(x => x + "!")
+      map(x => s"$x!")
 
   println(func(123))
 }

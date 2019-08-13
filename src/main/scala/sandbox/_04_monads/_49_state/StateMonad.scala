@@ -67,7 +67,7 @@ object StateMonad extends App {
     val pureDemo = State.pure[Int, String]("Result")
     println(pureDemo.run(10).value)
 
-    val inspectDemo = State.inspect[Int, String](_ + "!")
+    val inspectDemo = State.inspect[Int, String](str => s"$str!")
     println(inspectDemo.run(10).value)
 
     val modifyDemo = State.modify[Int](_ + 1)
