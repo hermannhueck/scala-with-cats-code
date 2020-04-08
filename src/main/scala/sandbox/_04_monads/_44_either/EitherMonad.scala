@@ -11,8 +11,8 @@ object EitherMonad extends App {
     { // Scala 2.11
       println(
         for {
-          a <- either1.right
-          b <- either2.right
+          a <- either1 // .right
+          b <- either2 // .right
         } yield a + b
       )
     }
@@ -77,7 +77,7 @@ object EitherMonad extends App {
       //  required: scala.util.Right[Nothing,Int]
       //              Left("Negative. Stopping!")
       //                  ^
-    */
+     */
 
     def countPositive(nums: List[Int]) =
       nums.foldLeft(0.asRight[String]) { (accumulator, num) =>
@@ -173,9 +173,9 @@ object EitherMonad extends App {
     // Choose error-handling behaviour based on type:
     def handleError(error: LoginError): Unit =
       error match {
-        case UserNotFound(u) => println(s"User not found: $u")
+        case UserNotFound(u)      => println(s"User not found: $u")
         case PasswordIncorrect(u) => println(s"Password incorrect: $u")
-        case UnexpectedError => println(s"Unexpected error")
+        case UnexpectedError      => println(s"Unexpected error")
       }
 
     val result1: LoginResult = User("dave", "passw0rd").asRight

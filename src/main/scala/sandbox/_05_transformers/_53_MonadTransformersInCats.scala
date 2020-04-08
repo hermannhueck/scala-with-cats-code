@@ -11,7 +11,7 @@ object _53_MonadTransformersInCats extends App {
     import cats.instances.either._
     import cats.syntax.applicative._
 
-    type ErrorOr[A] = Either[String, A]
+    type ErrorOr[A]       = Either[String, A]
     type ErrorOrOption[A] = OptionT[ErrorOr, A]
 
     // // Create using apply:
@@ -21,7 +21,7 @@ object _53_MonadTransformersInCats extends App {
     val b = 32.pure[ErrorOrOption]
 
     val c = a.flatMap(x => b.map(y => x + y))
-    println(c) // OptionT(Right(Some(42)))
+    println(c)       // OptionT(Right(Some(42)))
     println(c.value) // Right(Some(42))
 
     // Mapping over the Either in the stack:
@@ -40,7 +40,7 @@ object _53_MonadTransformersInCats extends App {
     import scala.concurrent.{Await, Future}
     import scala.concurrent.duration._
 
-    type FutureEither[A] = EitherT[Future, String, A]
+    type FutureEither[A]       = EitherT[Future, String, A]
     type FutureEitherOption[A] = OptionT[FutureEither, A]
 
     val futureEitherOr: FutureEitherOption[Int] =
@@ -67,7 +67,9 @@ object _53_MonadTransformersInCats extends App {
       3.seconds
     ) // Right(Some(42))
 
-    println(result.right.get)
+    println(result)
+    result foreach println
+    result foreach { opt => opt foreach println }
   }
 
   {
@@ -92,10 +94,10 @@ object _53_MonadTransformersInCats extends App {
     import scala.concurrent.duration._
 
     def wrap[A](value: A): OptionT[EitherT[Future, String, ?], A] = {
-      val option: Option[A] = Some(value)
-      val either: Either[String, Option[A]] = Right(option)
-      val future: Future[Either[String, Option[A]]] = Future(either)
-      val etf: EitherT[Future, String, Option[A]] = EitherT[Future, String, Option[A]](future)
+      val option: Option[A]                             = Some(value)
+      val either: Either[String, Option[A]]             = Right(option)
+      val future: Future[Either[String, Option[A]]]     = Future(either)
+      val etf: EitherT[Future, String, Option[A]]       = EitherT[Future, String, Option[A]](future)
       val otetf: OptionT[EitherT[Future, String, ?], A] = OptionT[EitherT[Future, String, ?], A](etf)
       otetf
     }
@@ -124,7 +126,9 @@ object _53_MonadTransformersInCats extends App {
       3.seconds
     ) // Right(Some(42))
 
-    println(result.right.get)
+    println(result)
+    result foreach println
+    result foreach { opt => opt foreach println }
   }
 
   {
