@@ -5,10 +5,10 @@ scalaVersion := "2.13.1"
 
 scalacOptions ++= Seq(
   "-encoding",
-  "UTF-8", // source files are in UTF-8
+  "UTF-8",        // source files are in UTF-8
   "-deprecation", // warn about use of deprecated APIs
-  "-unchecked", // warn about unchecked type parameters
-  "-feature" // warn about misused language features
+  "-unchecked",   // warn about unchecked type parameters
+  "-feature"      // warn about misused language features
   //"-Xlint",               // enable handy linter warnings
   // "-Ypartial-unification" // only 2.12 // allow the compiler to unify type constructors of different arities
   //"-language:higherKinds",// allow higher kinded types without `import scala.language.higherKinds`
@@ -22,9 +22,9 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-free" % catsVersion,
   "org.typelevel" %% "cats-laws" % catsVersion % Test,
   // "org.typelevel" %% "discipline" % "0.10.0" % Test,
-  "org.scalacheck" %% "scalacheck" % "1.14.3" % Test,
-  "org.typelevel" %% "cats-mtl-core" % "0.7.1",
-  "com.github.mpilquist" %% "simulacrum" % "0.19.0"
+  "org.scalacheck"       %% "scalacheck"    % "1.14.3" % Test,
+  "org.typelevel"        %% "cats-mtl-core" % "0.7.1",
+  "com.github.mpilquist" %% "simulacrum"    % "0.19.0"
 )
 
 addCompilerPlugin(
