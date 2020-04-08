@@ -78,7 +78,7 @@ object _53_MonadTransformersInCats extends App {
     import cats.instances.option._
     import cats.syntax.applicative._
 
-    val x = 123.pure[EitherT[Option, String, ?]]
+    val x = 123.pure[EitherT[Option, String, *]]
     println(x)
     println(x.value)
   }
@@ -93,16 +93,16 @@ object _53_MonadTransformersInCats extends App {
     import scala.concurrent.{Await, Future}
     import scala.concurrent.duration._
 
-    def wrap[A](value: A): OptionT[EitherT[Future, String, ?], A] = {
+    def wrap[A](value: A): OptionT[EitherT[Future, String, *], A] = {
       val option: Option[A]                             = Some(value)
       val either: Either[String, Option[A]]             = Right(option)
       val future: Future[Either[String, Option[A]]]     = Future(either)
       val etf: EitherT[Future, String, Option[A]]       = EitherT[Future, String, Option[A]](future)
-      val otetf: OptionT[EitherT[Future, String, ?], A] = OptionT[EitherT[Future, String, ?], A](etf)
+      val otetf: OptionT[EitherT[Future, String, *], A] = OptionT[EitherT[Future, String, *], A](etf)
       otetf
     }
 
-    val futureEitherOr: OptionT[EitherT[Future, String, ?], Int] =
+    val futureEitherOr: OptionT[EitherT[Future, String, *], Int] =
       for {
         a <- wrap(10)
         b <- wrap(32)
