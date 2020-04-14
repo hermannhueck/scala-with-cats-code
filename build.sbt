@@ -15,7 +15,10 @@ scalacOptions ++= Seq(
   // "-Xfatal-warnings",     // turn compiler warnings into errors
 )
 
-val catsVersion = "2.1.1"
+lazy val catsVersion             = "2.1.1"
+lazy val silencerVersion         = "1.6.0"
+lazy val kindProjectorVersion    = "0.11.0"
+lazy val betterMonadicForVersion = "0.3.1"
 
 libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-core" % catsVersion,
@@ -24,10 +27,20 @@ libraryDependencies ++= Seq(
   // "org.typelevel" %% "discipline" % "0.10.0" % Test,
   "org.scalacheck"       %% "scalacheck"    % "1.14.3" % Test,
   "org.typelevel"        %% "cats-mtl-core" % "0.7.1",
-  "com.github.mpilquist" %% "simulacrum"    % "0.19.0"
-)
-
-addCompilerPlugin(
-  "org.typelevel" % "kind-projector" % "0.11.0" cross CrossVersion.full
+  "com.github.mpilquist" %% "simulacrum"    % "0.19.0",
+  "com.github.ghik"      % "silencer-lib"   % silencerVersion % Provided cross CrossVersion.full,
+  // https://github.com/ghik/silencer
+  "com.github.ghik" % "silencer-lib" % silencerVersion % Provided cross CrossVersion.full,
+  compilerPlugin(
+    "com.github.ghik" % "silencer-plugin" % silencerVersion cross CrossVersion.full
+  ),
+  // https://github.com/typelevel/kind-projector
+  compilerPlugin(
+    compilerPlugin("org.typelevel" % "kind-projector" % kindProjectorVersion cross CrossVersion.full)
+  ),
+  // https://github.com/oleg-py/better-monadic-for
+  compilerPlugin(
+    compilerPlugin("com.olegpy" %% "better-monadic-for" % betterMonadicForVersion)
+  )
 )
 // addCompilerPlugin("org.scalamacros" % "paradise" % "2.1.0" cross CrossVersion.full)
