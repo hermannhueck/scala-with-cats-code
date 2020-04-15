@@ -36,8 +36,8 @@ object UsingParallel extends App {
       for {
         age <- parse(ageString)
         person <- (validateName(nameString).toValidated, validateAge(age).toValidated)
-          .mapN(Person)
-          .toEither
+                   .mapN(Person)
+                   .toEither
       } yield person
 
     val p1 = parsePerson("33", "Wondracheck")
@@ -57,7 +57,7 @@ object UsingParallel extends App {
     println("\n----- Using Parallel's parMapN")
     def parsePerson(ageString: String, nameString: String): Either[NonEmptyList[String], Person] =
       for {
-        age <- parse(ageString)
+        age    <- parse(ageString)
         person <- (validateName(nameString), validateAge(age)).parMapN(Person)
       } yield person
 
@@ -75,7 +75,11 @@ object UsingParallel extends App {
   }
 
   println("\n----- Traversing with Parallel")
-  val traversed = List(Either.left(42), Either.right(NonEmptyList.one("Error 1")), Either.right(NonEmptyList.one("Error 2"))).parSequence
+  val traversed = List(
+    Either.left(42),
+    Either.right(NonEmptyList.one("Error 1")),
+    Either.right(NonEmptyList.one("Error 2"))
+  ).parSequence
   println(traversed)
 
   println("\n----- mapN creates a cartesian product")
