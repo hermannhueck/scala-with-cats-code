@@ -22,6 +22,7 @@ lazy val betterMonadicForVersion = "0.3.1"
 
 libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-core" % catsVersion,
+  "org.typelevel" %% "kittens"   % "2.0.0",
   "org.typelevel" %% "cats-free" % catsVersion,
   "org.typelevel" %% "cats-laws" % catsVersion % Test,
   // "org.typelevel" %% "discipline" % "0.10.0" % Test,
