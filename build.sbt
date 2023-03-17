@@ -1,7 +1,7 @@
 name := "scala-with-cats-code"
 version := "0.1.0"
 
-scalaVersion := "2.13.1"
+scalaVersion := "2.13.10"
 
 scalacOptions ++= Seq(
   "-encoding",
@@ -15,18 +15,18 @@ scalacOptions ++= Seq(
   // "-Xfatal-warnings",     // turn compiler warnings into errors
 )
 
-lazy val catsVersion             = "2.1.1"
-lazy val silencerVersion         = "1.6.0"
-lazy val kindProjectorVersion    = "0.11.0"
+lazy val catsVersion             = "2.9.0"
+lazy val silencerVersion         = "1.7.12"
+lazy val kindProjectorVersion    = "0.13.2"
 lazy val betterMonadicForVersion = "0.3.1"
 
 libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-core" % catsVersion,
-  "org.typelevel" %% "kittens"   % "2.0.0",
+  "org.typelevel" %% "kittens"   % "2.3.2",
   "org.typelevel" %% "cats-free" % catsVersion,
   "org.typelevel" %% "cats-laws" % catsVersion % Test,
   // "org.typelevel" %% "discipline" % "0.10.0" % Test,
-  "org.scalacheck"       %% "scalacheck"    % "1.14.3" % Test,
+  "org.scalacheck"       %% "scalacheck"    % "1.17.0" % Test,
   "org.typelevel"        %% "cats-mtl-core" % "0.7.1",
   "com.github.mpilquist" %% "simulacrum"    % "0.19.0",
   "com.github.ghik"      % "silencer-lib"   % silencerVersion % Provided cross CrossVersion.full,
