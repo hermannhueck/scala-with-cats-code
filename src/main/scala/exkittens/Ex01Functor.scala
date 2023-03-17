@@ -13,7 +13,7 @@ object Ex01Functor extends hutil.App {
 
   implicit val fc: Functor[Cat] = {
     import auto.functor._
-    semi.functor
+    semiauto.functor
   }
 
   cat.map(_ + 1) | println

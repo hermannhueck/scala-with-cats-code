@@ -4,7 +4,7 @@ import cats.instances.string._
 import cats.syntax.semigroup._
 
 object Main extends App {
-  println
+  println()
   println("Hello " |+| "Cats!")
-  println
+  println()
 }

@@ -57,7 +57,7 @@ object Ex01ParallelValidation extends hutil.App {
   // v3: cats.data.Validated[cats.data.NonEmptyChain[ConfigError],ConnectionParams] = Valid(ConnectionParams(127.0.0.1,1234))
   v3 | println
 
-  println
+  println()
 
   implicit def validatedApplicative[E: Semigroup]: Applicative[Validated[E, *]] =
     new Applicative[Validated[E, *]] {

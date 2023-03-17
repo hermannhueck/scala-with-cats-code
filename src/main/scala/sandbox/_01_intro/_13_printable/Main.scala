@@ -19,9 +19,9 @@ object Main extends App {
     override def format(value: Date): String = "Date of meeting: " + value.toString
   }
 
-  println
+  println()
 
-  val mizzi = Cat("Mizzi", 1, "black")
+  val mizzi    = Cat("Mizzi", 1, "black")
   val garfield = Cat("Garfield", 38, "ginger and black")
 
   Printable.print("Cats are meeting here!")
@@ -38,5 +38,5 @@ object Main extends App {
   garfield.print
   new Date().print
 
-  println
+  println()
 }

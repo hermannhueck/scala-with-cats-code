@@ -21,13 +21,13 @@ object Ex02Show extends hutil.App {
 
   implicit val peopleShow: Show[People] = {
     import auto.show._
-    semi.show
+    semiauto.show
   } //auto derive Show for People
 
-  println
+  println()
   mike.contactInfo.address.show | println
 
-  println
+  println()
   mike.show | println
   show"$mike" | println
 }

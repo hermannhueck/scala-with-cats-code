@@ -74,11 +74,11 @@ object ExampleEq extends App {
 
   implicit val catEq: Eq[Cat] = Eq.instance[Cat] { (cat1, cat2) =>
     cat1.name === cat2.name &&
-      cat1.age === cat2.age &&
-      cat1.color === cat2.color
+    cat1.age === cat2.age &&
+    cat1.color === cat2.color
   }
 
-  val garfield = Cat("Garfield",   38, "orange and black")
+  val garfield   = Cat("Garfield", 38, "orange and black")
   val heathcliff = Cat("Heathcliff", 33, "black and white")
 
   println(garfield === garfield)
@@ -93,5 +93,5 @@ object ExampleEq extends App {
   println(Option(garfield) === Option(heathcliff))
   println(Option(garfield) === Option.empty[Cat])
 
-  println
+  println()
 }

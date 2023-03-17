@@ -7,15 +7,14 @@ import cats.instances.int._
 import cats.instances.string._
 import cats.instances.option._
 
-
 object MeetCats extends App {
 
   println("\n--> using Show.apply ...\n")
 
-  val showInt:    Show[Int]    = Show.apply[Int]
+  val showInt: Show[Int]       = Show.apply[Int]
   val showString: Show[String] = Show[String]
 
-  val intAsString: String = showInt.show(123)
+  val intAsString: String    = showInt.show(123)
   val stringAsString: String = showString.show("abc")
 
   println(intAsString)
@@ -25,7 +24,7 @@ object MeetCats extends App {
 
   import cats.syntax.show._ // for show
 
-  val shownInt = 123.show
+  val shownInt    = 123.show
   val shownString = "abc".show
 
   println(shownInt)
@@ -49,25 +48,24 @@ object MeetCats extends App {
   showDate2()
   showDate3()
 
-
   println("\n--> using show for Cat ...\n")
 
   final case class Cat(name: String, age: Int, color: String)
 
-  implicit val catShow: Show[Cat] = Show.show{ cat =>
+  implicit val catShow: Show[Cat] = Show.show { cat =>
     val name  = cat.name.show
     val age   = cat.age.show
     val color = cat.color.show
     s"$name is a $age year-old $color cat."
   }
 
-  val mizzi = Cat("Mizzi", 1, "black and white")
+  val mizzi    = Cat("Mizzi", 1, "black and white")
   val garfield = Cat("Garfield", 38, "ginger and black")
 
   println(mizzi.show)
   println(garfield.show)
 
-  println
+  println()
 
   private def showDate(): Unit = {
     implicit val dateShow: Show[Date] =

@@ -7,13 +7,13 @@ object EvalMonad extends App {
   println("--- 4.6.2 Eval’s Models of Evaluation")
 
   {
-    val now: Eval[Double] = Eval.now(math.random + 1000)
+    val now: Eval[Double] = Eval.now(math.random() + 1000)
     // now: cats.Eval[Double] = Now(1000.6884369117727)
 
-    val later: Eval[Double] = Eval.later(math.random + 2000)
+    val later: Eval[Double] = Eval.later(math.random() + 2000)
     // later: cats.Eval[Double] = cats.Later@71175ee9
 
-    val always: Eval[Double] = Eval.always(math.random + 3000)
+    val always: Eval[Double] = Eval.always(math.random() + 3000)
     // always: cats.Eval[Double] = cats.Always@462e2fea
 
     println(now.value)
@@ -30,23 +30,25 @@ object EvalMonad extends App {
 
   {
     println("--- greeting ---")
-    val greeting = Eval.always {
-      println("Step 1")
-      "Hello"
-    }.map { str =>
-      println("Step 2")
-      s"$str world"
-    }
+    val greeting = Eval
+      .always {
+        println("Step 1")
+        "Hello"
+      }
+      .map { str =>
+        println("Step 2")
+        s"$str world"
+      }
     println(greeting.value)
 
     println("--- ans ---")
     val ans = for {
       a <- Eval.now {
-        println("Calculating A"); 40
-      }
+            println("Calculating A"); 40
+          }
       b <- Eval.always {
-        println("Calculating B"); 2
-      }
+            println("Calculating B"); 2
+          }
     } yield {
       println("Adding A and B")
       a + b
@@ -55,13 +57,13 @@ object EvalMonad extends App {
     println(ans.value)
 
     println("--- saying ---")
-    val saying = Eval.
-      always {
+    val saying = Eval
+      .always {
         println("Step 1"); "The cat"
-      }.
-      map { str => println("Step 2"); s"$str sat on" }.
-      memoize.
-      map { str => println("Step 3"); s"$str the mat" }
+      }
+      .map { str => println("Step 2"); s"$str sat on" }
+      .memoize
+      .map { str => println("Step 3"); s"$str the mat" }
     println(saying.value)
     println(saying.value)
   }
@@ -100,7 +102,7 @@ object EvalMonad extends App {
     def foldRightNotStackSafe[A, B](as: List[A], acc: B)(fn: (A, B) => B): B =
       as match {
         case head :: tail => fn(head, foldRightNotStackSafe(tail, acc)(fn))
-        case Nil => acc
+        case Nil          => acc
       }
 
     // stack safe
@@ -109,13 +111,11 @@ object EvalMonad extends App {
       def foldRightEval(as: List[A], acc: Eval[B])(fn: (A, Eval[B]) => Eval[B]): Eval[B] =
         as match {
           case head :: tail => Eval.defer(fn(head, foldRightEval(tail, acc)(fn)))
-          case Nil => acc
+          case Nil          => acc
         }
 
-      foldRightEval(as, Eval.now(acc)) { (a, b) =>
-          b.map(fn(a, _))
-        }.value
-      }
+      foldRightEval(as, Eval.now(acc)) { (a, b) => b.map(fn(a, _)) }.value
+    }
 
     val result: Long = foldRight((1 to 100000).toList, 0L)(_ + _)
     println(result)

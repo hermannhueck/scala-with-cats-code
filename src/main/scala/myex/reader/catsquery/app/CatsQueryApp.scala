@@ -18,14 +18,14 @@ object CatsQueryApp extends App {
     5 -> Cat(5, "Carlo Tomcat", 18, List()),
     6 -> Cat(6, "Minka", 8, List(7, 8)),
     7 -> Cat(7, "Freddy", 0, List()),
-    8 -> Cat(8, "Sammy", 0, List()),
+    8 -> Cat(8, "Sammy", 0, List())
   )
   val repo = CatsRepo.getRepository(myCats)
 
   def findMotherWithKitten(name: String): CatsRepo => (Cat, List[Cat]) = {
     import myex.reader.catsquery.repo.CatsRepoFunctions._
     for { // RepoFunction context
-      found <- findByName(name)
+      found  <- findByName(name)
       mother = found.head
       kitten <- findByPredicate(c => mother.kitten.contains(c.id))
     } yield (mother, kitten)
@@ -43,7 +43,7 @@ object CatsQueryApp extends App {
         } yield (mother, kitten)
 
     for { // RepoFunction context
-      mothers <- findByPredicate(_.kitten.nonEmpty)
+      mothers           <- findByPredicate(_.kitten.nonEmpty)
       mothersWithKitten <- findMothersKitten(mothers)
     } yield mothersWithKitten
   }
@@ -51,11 +51,11 @@ object CatsQueryApp extends App {
   def findCatsWithoutKitten: CatsRepo => List[Cat] =
     CatsRepoFunctions.findByPredicate(_.kitten.isEmpty)
 
-  println
+  println()
 
   println("\n----- Mizzi with her kitten")
   val findMizziWithKitten: CatsRepo => (Cat, List[Cat]) = findMotherWithKitten("mizzi")
-  val (mother, kitten) = findMizziWithKitten(repo)
+  val (mother, kitten)                                  = findMizziWithKitten(repo)
   println(s"mother: $mother")
   println(s"  kitten: ${kitten.mkString(", ")}")
 
@@ -69,9 +69,7 @@ object CatsQueryApp extends App {
 
   println("\n----- Cats without kitten")
   val catsWithoutKitten: List[Cat] = findCatsWithoutKitten(repo)
-  catsWithoutKitten.sortWith(_.id < _.id) foreach { cat =>
-    println(s"$cat")
-  }
+  catsWithoutKitten.sortWith(_.id < _.id) foreach { cat => println(s"$cat") }
 
   println("\n-----\n")
 }
