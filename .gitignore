@@ -1,21 +1,28 @@
 # directories
 target/
+out/
+output/
 
 # hidden directories
 .idea/
-.vscode/
-.metals/
 .bloop/
-project/.bloop/
+.bsp/
+.metals/
+.vscode/
+.ammonite/
+.scala-build/
 
 # files
 *.class
 *.log
 *.jar
 *.zip
-project/metals.sbt
+metals.sbt
+*.pdf
+package-lock.json
 
 # hidden files
 .history
-.dotty-ide-disabled
+.sbthistory
+.dotty-ide*
 .DS_Store
