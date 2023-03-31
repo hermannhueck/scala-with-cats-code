@@ -19,7 +19,7 @@ object MonadErrorHandling extends App {
 
   val eo1: ErrorOr[ErrorOr[String]] = monadError.handleError(failure) {
     case "Badness" => monadError.pure("It's ok")
-    case other => monadError.raiseError("It's not ok")
+    case other     => monadError.raiseError("It's not ok")
   }
   println(eo1)
 
@@ -48,14 +48,49 @@ object MonadErrorHandling extends App {
 
   println("--- 4.5.3 Instances of MonadError")
 
+  import scala.util.Try
+  import cats.instances.try_._ // for MonadError
   {
-    import scala.util.Try
-    import cats.instances.try_._ // for MonadError
 
     val exn: Throwable = new RuntimeException("It's all gone wrong")
     val tryy: Try[Int] = exn.raiseError[Try, Int]
     println(tryy)
   }
+
+  println("--- 4.5.4 Exercise: Abstracting")
+
+  import scala.util.chaining._
+
+  def validateAdult[F[_]](age: Int)(implicit me: MonadError[F, Throwable]): F[Int] =
+    if (age < 18)
+      me.raiseError(new IllegalArgumentException(s"Age $age is not valid, it must be greater than 18"))
+    else
+      age.pure[F]
+
+  validateAdult[Try](18) pipe println
+  validateAdult[Try](8) pipe println
+
+  type ExceptionOr[A] = Either[Throwable, A]
+
+  validateAdult[ExceptionOr](18) pipe println
+  validateAdult[ExceptionOr](8) pipe println
+
+  validateAdult[Either[Throwable, *]](18) pipe println
+  validateAdult[Either[Throwable, *]](8) pipe println
+
+  def validateAdult2[F[_]](age: Int)(implicit me: MonadError[F, Throwable]): F[Int] =
+    me.ensure(age.pure[F])(
+      new IllegalArgumentException(s"Age $age is not valid, it must be greater than 18")
+    )(_ >= 18)
+
+  validateAdult2[Try](18) pipe println
+  validateAdult2[Try](8) pipe println
+
+  validateAdult2[ExceptionOr](18) pipe println
+  validateAdult2[ExceptionOr](8) pipe println
+
+  validateAdult2[Either[Throwable, *]](18) pipe println
+  validateAdult2[Either[Throwable, *]](8) pipe println
 
   println("---")
 }
