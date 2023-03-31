@@ -45,14 +45,14 @@ object MonoidsInCats extends App {
 
   def add(items: List[Int]): Int =
     items.foldRight(Monoid[Int].empty)(_ |+| _)
-  println(add(List(1,2,3,4,5))) // == 15
+  println(add(List(1, 2, 3, 4, 5))) // == 15
 
   multMonoid()
 
   private def multMonoid(): Unit = {
 
     implicit val intMultiplication: Monoid[Int] = new Monoid[Int] {
-      override def empty: Int = 1
+      override def empty: Int                   = 1
       override def combine(x: Int, y: Int): Int = x * y
     }
 
@@ -70,7 +70,7 @@ object MonoidsInCats extends App {
   def add2[A](items: List[A])(implicit monoid: Monoid[A]): A = // using implicit
     items.foldLeft(monoid.empty)(_ |+| _)
 
-  def add3[A : Monoid](items: List[A]): A = // same using context bound syntax
+  def add3[A: Monoid](items: List[A]): A = // same using context bound syntax
     items.foldLeft(Monoid[A].empty)(_ |+| _)
 
   println(add2(List(1, 2, 3)))
@@ -79,7 +79,7 @@ object MonoidsInCats extends App {
 
   println(add3(List(1, 2, 3)))
   println(add3(List(Some(1), None, Some(2), None, Some(3))))
-  // println(add2(List(Some(1), Some(2), Some(3)))) // complie error
+  // println(add3(List(Some(1), Some(2), Some(3)))) // complie error
 
   println("---")
 
@@ -88,7 +88,7 @@ object MonoidsInCats extends App {
   case class Order(totalCost: Double, quantity: Double)
 
   implicit val orderMonoid = new Monoid[Order] {
-    override def empty: Order = new Order(0.0, 0.0)
+    override def empty: Order                       = new Order(0.0, 0.0)
     override def combine(x: Order, y: Order): Order = Order(x.totalCost + y.totalCost, x.quantity + y.quantity)
   }
 
