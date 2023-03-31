@@ -33,9 +33,7 @@ object JsonWriterInstances {
       new JsonWriter[None.type] {
         def write(option: None.type): Json = JsNull
       }
-  */
-
-
+   */
   /*
     implicit def optionWriter[A, B <: A](implicit writer: JsonWriter[A], ev: Option[B] <:< Option[A]): JsonWriter[Option[B]] =
       new JsonWriter[Option[B]] {
@@ -45,7 +43,7 @@ object JsonWriterInstances {
             case None         => JsNull
           }
       }
-  */
+   */
 
   // etc...
 }
