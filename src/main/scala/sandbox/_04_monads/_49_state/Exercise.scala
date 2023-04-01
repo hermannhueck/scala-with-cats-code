@@ -18,14 +18,12 @@ object Exercise extends App {
     }
 
     def operand(num: Int): CalcState[Int] =
-      State[List[Int], Int] { stack =>
-        (num :: stack, num)
-      }
+      State[List[Int], Int] { stack => (num :: stack, num) }
 
     def operator(func: (Int, Int) => Int): CalcState[Int] =
       State[List[Int], Int] {
         case a :: b :: tail =>
-          val ans = func(a, b)
+          val ans = func(b, a) // swap order
           (ans :: tail, ans)
         case _ =>
           sys.error("Fail!")
@@ -43,9 +41,7 @@ object Exercise extends App {
     import cats.syntax.applicative._ // for pure
 
     def evalAll(input: List[String]): CalcState[Int] =
-      input.foldLeft(0.pure[CalcState]) { (state, sym) =>
-        state.flatMap(_ => evalOne(sym))
-      }
+      input.foldLeft(0.pure[CalcState]) { (state, sym) => state.flatMap(_ => evalOne(sym)) }
 
     val program2 = evalAll(List("1", "2", "+", "3", "*"))
     println(program2.runA(Nil).value) // --> 9
