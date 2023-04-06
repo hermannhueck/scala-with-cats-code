@@ -1,6 +1,6 @@
 // --- 6.4.4 Exercise: Form Validation
 
-import cats.data.{NonEmptyChain, Validated}
+import cats.data.{EitherNec, NonEmptyChain, Validated, ValidatedNec}
 import cats.syntax.either._
 
 type FormData = Map[String, String]
@@ -8,22 +8,19 @@ type FormData = Map[String, String]
 type NEC[A] = NonEmptyChain[A]
 def NEC[A](a: A): NonEmptyChain[A] = NonEmptyChain(a)
 
-type EitherNec[A]    = Either[NEC[String], A]
-type ValidatedNec[A] = Validated[NEC[String], A]
-
-def getValue(name: String)(data: FormData): EitherNec[String] =
+def getValue(name: String)(data: FormData): EitherNec[String, String] =
   data
     .get(name)                                  // : Option[String]
-    .toRight(NEC(s"$name field not specified")) // : EitherNec[String]
+    .toRight(NEC(s"$name field not specified")) // : EitherNec[String, String]
 
-val getName: FormData => EitherNec[String] =
+val getName: FormData => EitherNec[String, String] =
   getValue("name")
 
 // --- test getName
 getName(Map())
 getName(Map("name" -> "Dade Murphy"))
 
-def parseInt(name: String)(data: String): EitherNec[Int] =
+def parseInt(name: String)(data: String): EitherNec[String, Int] =
   Either
     .catchOnly[NumberFormatException](data.toInt)
     .leftMap(_ => NEC(s"$name must be an integer"))
@@ -32,7 +29,7 @@ def parseInt(name: String)(data: String): EitherNec[Int] =
 parseInt("age")("11")
 parseInt("age")("foo")
 
-def nonBlank(name: String)(data: String): EitherNec[String] =
+def nonBlank(name: String)(data: String): EitherNec[String, String] =
   data
     .asRight[NEC[String]]
     .ensure(NEC(s"$name cannot be blank"))(_.nonEmpty)
@@ -41,7 +38,7 @@ def nonBlank(name: String)(data: String): EitherNec[String] =
 nonBlank("name")("Dade Murphy")
 nonBlank("name")("")
 
-def nonNegative(name: String)(data: Int): EitherNec[Int] =
+def nonNegative(name: String)(data: Int): EitherNec[String, Int] =
   data
     .asRight[NEC[String]]
     .ensure(NEC(s"$name must be non-negative"))(_ >= 0)
@@ -50,7 +47,7 @@ def nonNegative(name: String)(data: Int): EitherNec[Int] =
 nonNegative("age")(11)
 nonNegative("age")(-1)
 
-def readName(data: FormData): EitherNec[String] =
+def readName(data: FormData): EitherNec[String, String] =
   getValue("name")(data)
     .flatMap(nonBlank("name"))
 
@@ -59,7 +56,7 @@ readName(Map())
 readName(Map("name" -> ""))
 readName(Map("name" -> "Dade Murphy"))
 
-def readAge(data: FormData): EitherNec[Int] =
+def readAge(data: FormData): EitherNec[String, Int] =
   getValue("age")(data)
     .flatMap(nonBlank("age"))
     .flatMap(parseInt("age"))
@@ -75,12 +72,24 @@ import cats.syntax.apply._   // for mapN
 
 case class User(name: String, age: Int)
 
-def readUser(data: FormData): ValidatedNec[User] =
+def readUser(data: FormData): EitherNec[String, User] =
   (
     readName(data).toValidated,
     readAge(data).toValidated
-  ).mapN(User.apply _)
+  ).mapN(User.apply _).toEither
 
 // --- test readUser
 readUser(Map("age" -> "-1"))
 readUser(Map("name" -> "Dave", "age" -> "37"))
+
+import cats.syntax.parallel._ // for Semigroupal
+
+def parReadUser(data: FormData): EitherNec[String, User] =
+  (
+    readName(data),
+    readAge(data)
+  ).parMapN(User.apply _)
+
+// --- test parReadUser
+parReadUser(Map("age" -> "-1"))
+parReadUser(Map("name" -> "Dave", "age" -> "37"))
