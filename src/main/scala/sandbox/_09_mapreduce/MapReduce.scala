@@ -22,34 +22,36 @@ object MapReduce extends App {
   def foldMap[A, B: Monoid](va: Vector[A])(f: A => B): B =
     va.map(f).combineAll // combineAll == foldLeft(empty)(combine)
 
-  def foldMap2[A, B : Monoid](as: Vector[A])(f: A => B): B =
+  def foldMap2[A, B: Monoid](as: Vector[A])(f: A => B): B =
     as.map(f).foldLeft(Monoid[B].empty)(_ |+| _)
 
-  def foldMap3[A, B : Monoid](as: Vector[A])(f: A => B): B =
+  def foldMap3[A, B: Monoid](as: Vector[A])(f: A => B): B =
     as.foldLeft(Monoid[B].empty)(_ |+| f(_))
 
-  println(  foldMap(Vector(1, 2, 3))(identity)  )
-  println(  foldMap(Vector(1, 2, 3))(_.toString + "! ")  )
-  println(  foldMap("Hello world!".toVector)(_.toString.toUpperCase)  )
+  println(foldMap(Vector(1, 2, 3))(identity))
+  println(foldMap(Vector(1, 2, 3))(_.toString + "! "))
+  println(foldMap("Hello world!".toVector)(_.toString.toUpperCase))
 
   val processors = Runtime.getRuntime.availableProcessors
-  println(  s"processors = $processors"  )
+  println(s"processors = $processors")
 
-  println(  (1 to 10).toList.grouped(3).toList  )
-  println(  (1 to 32).toList.grouped(32/processors).toList  )
+  println((1 to 10).toList.grouped(3).toList)
+  println((1 to 32).toList.grouped(32 / processors).toList)
 
   def chunkSize(totalSize: Int): Int = {
     val nCores = Runtime.getRuntime.availableProcessors
     (1.0 * totalSize / nCores).ceil.toInt
   }
 
-  def parallelFoldMap[A, B : Monoid](values: Vector[A])(f: A => B): Future[B] = {
+  def parallelFoldMap[A, B: Monoid](values: Vector[A])(f: A => B): Future[B] = {
     val chunks = values.grouped(chunkSize(values.length)).toVector
-    val future = Future.traverse(chunks) { chunk => Future(foldMap(chunk)(f)) } // Future.traverse using foldMap implemented above
-    future map {_.combineAll}
+    val future = Future.traverse(chunks) { chunk =>
+      Future(foldMap(chunk)(f))
+    } // Future.traverse using foldMap implemented above
+    future map { _.combineAll }
   }
 
-  def parallelFoldMap2[A, B : Monoid](values: Vector[A])(f: A => B): Future[B] =
+  def parallelFoldMap2[A, B: Monoid](values: Vector[A])(f: A => B): Future[B] =
     values
       .grouped(chunkSize(values.length))
       .toVector
@@ -57,21 +59,21 @@ object MapReduce extends App {
       .map(_.combineAll)
 
   println("----- foldMap")
-  println(  foldMap((1 to 1000000).toVector)(identity)  )
+  println(foldMap((1 to 1000000).toVector)(identity))
 
   println("----- parallelFoldMap")
   val result = Await.result(
     parallelFoldMap((1 to 1000000).toVector)(identity),
     3 seconds
   )
-  println(  result  )
+  println(result)
 
   println("----- parallelFoldMap2")
   val result2 = Await.result(
     parallelFoldMap2((1 to 1000000).toVector)(identity),
     3 seconds
   )
-  println(  result2  )
+  println(result2)
 
   println("-----\n")
 }
