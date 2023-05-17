@@ -11,37 +11,40 @@ sealed trait Predicate[E, A] {
 
   import Predicate._
 
-  def and(that: Predicate[E, A]): Predicate[E, A] = And(this, that)
+  def and(that: Predicate[E, A]): Predicate[E, A] =
+    And(this, that)
 
-  def or(that: Predicate[E, A]): Predicate[E, A] = Or(this, that)
+  def or(that: Predicate[E, A]): Predicate[E, A] =
+    Or(this, that)
 
-  def apply(a: A)(implicit s: Semigroup[E]): Validated[E, A] = this match {
+  def apply(a: A)(implicit s: Semigroup[E]): Validated[E, A] =
+    this match {
 
-    case Pure(func) =>
-      func(a)
+      case Pure(func) =>
+        func(a)
 
-    case And(left, right) =>
-      (left(a), right(a)).mapN((_, _) => a)
+      case And(left, right) =>
+        (left(a), right(a)).mapN((_, _) => a)
 
-    case Or(left, right) =>
-      left(a) match {
-        case Valid(a1)   => Valid(a)
-        case Invalid(e1) =>
-          right(a) match {
-            case Valid(a2)   => Valid(a)
-            case Invalid(e2) => Invalid(e1 |+| e2)
-          }
-      }
-  }
+      case Or(left, right) =>
+        left(a) match {
+          case Valid(a1)   => Valid(a)
+          case Invalid(e1) =>
+            right(a) match {
+              case Valid(a2)   => Valid(a)
+              case Invalid(e2) => Invalid(e1 |+| e2)
+            }
+        }
+    }
 }
 
 object Predicate {
 
+  final case class Pure[E, A](func: A => Validated[E, A]) extends Predicate[E, A]
+
   final case class And[E, A](left: Predicate[E, A], right: Predicate[E, A]) extends Predicate[E, A]
 
   final case class Or[E, A](left: Predicate[E, A], right: Predicate[E, A]) extends Predicate[E, A]
-
-  final case class Pure[E, A](func: A => Validated[E, A]) extends Predicate[E, A]
 
   def apply[E, A](f: A => Validated[E, A]): Predicate[E, A] =
     Pure(f)
@@ -115,24 +118,16 @@ object Combinators {
   // ----- Predicates
 
   def longerThan(n: Int): Predicate[Errors, String] =
-    Predicate.lift(
-      error(s"Must be longer than $n characters"),
-      str => str.length > n)
+    Predicate.lift(error(s"Must be longer than $n characters"), str => str.length > n)
 
   val alphanumeric: Predicate[Errors, String] =
-    Predicate.lift(
-      error(s"Must be all alphanumeric characters"),
-      str => str.forall(_.isLetterOrDigit))
+    Predicate.lift(error(s"Must be all alphanumeric characters"), str => str.forall(_.isLetterOrDigit))
 
   def contains(char: Char): Predicate[Errors, String] =
-    Predicate.lift(
-      error(s"Must contain the character $char"),
-      str => str.contains(char))
+    Predicate.lift(error(s"Must contain the character $char"), str => str.contains(char))
 
   def containsOnce(char: Char): Predicate[Errors, String] =
-    Predicate.lift(
-      error(s"Must contain the character $char only once"),
-      str => str.count(c => c == char) == 1)
+    Predicate.lift(error(s"Must contain the character $char only once"), str => str.count(c => c == char) == 1)
 
   // ----- Checks
 
@@ -140,7 +135,7 @@ object Combinators {
   // and consist entirely of alphanumeric characters
   //
   val checkUsername: Check[Errors, String, String] =
-  Check(longerThan(3) and alphanumeric)
+    Check(longerThan(3) and alphanumeric)
 
   // An email address must contain a single `@` sign.
   // Split the string at the `@`.
@@ -149,12 +144,12 @@ object Combinators {
   // at least three characters long and contain a dot.
   //
   val splitEmail: Check[Errors, String, (String, String)] =
-  Check(_.split('@') match {
-    case Array(name, domain) =>
-      (name, domain).validNel[String]
-    case other =>
-      "Must contain a single @ character".invalidNel[(String, String)]
-  })
+    Check(_.split('@') match {
+      case Array(name, domain) =>
+        (name, domain).validNel[String]
+      case other               =>
+        "Must contain a single @ character".invalidNel[(String, String)]
+    })
 
   val checkLeft: Check[Errors, String, String] =
     Check(longerThan(0))
@@ -175,7 +170,7 @@ object TransformingDataRecap extends App {
 
   import Combinators._
 
-  println("----- 12.10.9/10 Transforming Data, Recap")
+  println("----- 10.9/10 Transforming Data, Recap")
 
   final case class User(username: String, email: String)
 
